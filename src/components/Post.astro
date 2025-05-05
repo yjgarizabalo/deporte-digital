@@ -1,0 +1,15 @@
+---
+const { title, excerpt, img, author, date } = Astro.props;
+---
+
+<article class="bg-white shadow-md rounded-lg overflow-hidden">
+  <img src={img} alt={title} class="w-full h-48 object-cover" />
+  <div class="p-4">
+    <h2 class="text-lg font-bold">{title}</h2>
+    <div class="text-sm text-gray-600 mt-2" set:html={excerpt}></div>
+    <div class="flex justify-between items-center mt-4 text-sm text-gray-500">
+      <span>Autor: {author}</span>
+      <span>{new Date(date).toLocaleDateString("es-ES", { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    </div>
+  </div>
+</article>

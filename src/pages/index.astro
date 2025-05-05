@@ -1,11 +1,56 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import MainLayout from "../layouts/Layout.astro";
+import Post from "../components/Post.astro";
+import Card from "../components/Card.astro";
+import { getLatesPost } from "../lib/wp";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Obtén la data desde la función `getPostInfo`
+const posts = await getLatesPost({
+  perPage: 5
+});
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<MainLayout title="Deporte digital" description="Últimas noticias de fútbol y más">
+  <div class="grid grid-cols-12 gap-8">
+    <!-- Columna de titulares -->
+    <aside class="col-span-3 bg-white shadow-md rounded-lg p-4 h-96 overflow-y-auto">
+      <h2 class="text-xl font-bold mb-4">Titulares</h2>
+      <div class="space-y-4">
+        {posts.map((post: { title: { rendered: unknown; }; link: unknown; }) => (
+          <Card 
+            title={post.title} 
+            link={post.link} 
+          />
+        ))}
+      </div>
+    </aside>
+
+  
+    <!-- Columna principal -->
+    <div class="col-span-6 space-y-8">
+      {posts.map((post: any) => (
+        <a href={`/post/${post.slug}`} key={post.slug} class="block hover:opacity-90 transition-opacity">
+          <Post 
+            title={post.title}
+            excerpt={post.excerpt}
+            img={post.featured_media}
+            author={post.author} 
+            date={post.date ? post.date : "Fecha no disponible"}
+          />
+        </a>
+      ))}
+    </div>
+
+    <!-- Columna de ligas -->
+    <aside class="col-span-3 bg-white shadow-md rounded-lg p-4 h-96 overflow-y-auto">
+      <h2 class="text-xl font-bold mb-4">Ligas</h2>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-blue-500 truncate">UEFA Champions League</a></li>
+        <li><a href="#" class="hover:text-blue-500 truncate">Premier League</a></li>
+        <li><a href="#" class="hover:text-blue-500 truncate">CONMEBOL Libertadores</a></li>
+        <li><a href="#" class="hover:text-blue-500 truncate">Fórmula 1</a></li>
+        <li><a href="#" class="hover:text-blue-500 truncate">NBA</a></li>
+      </ul>
+    </aside>
+  </div>
+</MainLayout>
